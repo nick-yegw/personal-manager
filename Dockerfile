@@ -1,3 +1,14 @@
+# First stage: complete build environment
+FROM maven:3.5.0-jdk-8-alpine AS builder
+
+# add pom.xml and source code
+ADD ./pom.xml pom.xml
+ADD ./lombok.config lombok.config
+ADD ./src src/
+
+RUN mvn clean package
+
+# Second stage: minimal runtime environment
 FROM centos:7.4.1708
 MAINTAINER Nick <nick.ye0212@gmail.com>
 
@@ -39,5 +50,6 @@ ENTRYPOINT [ "sh", "-c", "java $APP_OPTS $JMX_OPTS $JAVA_OPTS $GCLOG_OPTS -Djava
 
 WORKDIR /home/nick/local
 
-COPY target/xp-equity-svr-boot-*-exec.jar /home/nick/local/xp-equity-svr-boot.jar
+# copy jar from the first stage
+COPY --from=builder target/xp-equity-svr-boot-*-exec.jar /home/nick/local/xp-equity-svr-boot.jar
 USER nick
