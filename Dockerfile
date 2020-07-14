@@ -1,5 +1,5 @@
 # First stage: complete build environment
-FROM maven:3.5.0-jdk-8-alpine AS builder
+FROM maven:3.6.3-jdk-8 AS builder
 
 # add pom.xml and source code
 ADD ./pom.xml pom.xml
@@ -51,5 +51,5 @@ ENTRYPOINT [ "sh", "-c", "java $APP_OPTS $JMX_OPTS $JAVA_OPTS $GCLOG_OPTS -Djava
 WORKDIR /home/nick/local
 
 # copy jar from the first stage
-COPY --from=builder target/xp-equity-svr-boot-*-exec.jar /home/nick/local/xp-equity-svr-boot.jar
+COPY --from=builder target/personal-manager-*.jar /home/nick/local/personal-manager.jar
 USER nick
